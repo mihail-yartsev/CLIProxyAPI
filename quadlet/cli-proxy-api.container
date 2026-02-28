@@ -1,0 +1,42 @@
+[Unit]
+Description=CLIProxyAPI (rootless Podman Quadlet)
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/eceasy/cli-proxy-api@sha256:cf0f4d0f97b0e02289cb8d1dea7c4c2a50d0dfdd390816a700ae64e5217c1205
+ContainerName=cli-proxy-api
+Pull=missing
+
+# Local-only binds by default (change 127.0.0.1 to 0.0.0.0 for LAN exposure).
+# OAuth callback ports are intentionally published for browser login flows.
+PublishPort=127.0.0.1:8317:8317
+PublishPort=127.0.0.1:8085:8085
+PublishPort=127.0.0.1:1455:1455
+PublishPort=127.0.0.1:54545:54545
+PublishPort=127.0.0.1:51121:51121
+PublishPort=127.0.0.1:11451:11451
+
+Environment=DEPLOY=
+Environment=WRITABLE_PATH=/var/lib/cliproxy
+EnvironmentFile=%h/.config/cliproxy/cliproxy.env
+
+Volume=%h/.config/cliproxy/config.yaml:/CLIProxyAPI/config.yaml:Z
+Volume=%h/.local/share/cliproxy/auths:/root/.cli-proxy-api:Z
+Volume=%h/.local/share/cliproxy/state:/var/lib/cliproxy:Z
+
+# Container hardening
+NoNewPrivileges=true
+DropCapability=all
+ReadOnly=true
+Tmpfs=/tmp:rw,noexec,nodev,nosuid,size=64m
+
+[Service]
+Restart=always
+RestartSec=5
+MemoryMax=768M
+CPUQuota=100%
+TasksMax=256
+
+[Install]
+WantedBy=default.target
