@@ -10,7 +10,7 @@ Pull=missing
 
 # Local-only binds by default (change 127.0.0.1 to 0.0.0.0 for LAN exposure).
 # OAuth callback ports are intentionally published for browser login flows.
-PublishPort=127.0.0.1:8317:8317
+PublishPort=8317:8317
 PublishPort=127.0.0.1:8085:8085
 PublishPort=127.0.0.1:1455:1455
 PublishPort=127.0.0.1:54545:54545
